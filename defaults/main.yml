@@ -1,0 +1,7 @@
+---
+
+proxy_env:
+   http_proxy: http://your-proxy-server:port
+key_server: pool.sks-keyservers.net
+key_id: 1285491434D8786F 
+meta_pkg_install: srvadmin-all

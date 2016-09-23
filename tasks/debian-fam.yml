@@ -1,0 +1,14 @@
+---
+
+  - name: import GPG key
+    # uncomment if you have a proxy server and specify in defaults/main.yml
+    # environment: "{{ proxy_env }}"
+    apt_key: keyserver={{ key_server }} id={{ key_id }}
+
+  - name: Add definition file for official Dell apt repos
+    template: src=linux.dell.com.sources.list.j2 dest=/etc/apt/sources.list.d/linux.dell.com.sources.list
+
+  - name: Install OMSA
+    apt: name={{ meta_pkg_install }} update_cache=yes
+    notify:
+    - start omsa

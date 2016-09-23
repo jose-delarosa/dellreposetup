@@ -1,0 +1,4 @@
+---
+
+- name: start omsa
+  command: /opt/dell/srvadmin/sbin/srvadmin-services.sh start

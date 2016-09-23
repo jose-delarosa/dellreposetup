@@ -1,0 +1,33 @@
+---
+
+  - name: install required packages
+    action: >
+      {{ ansible_pkg_mgr }} name={{ item }} state=present update_cache=yes
+    with_items:
+      - wget
+
+  - name: Subscribe to official Dell yum repos
+    shell: wget -q -O - http://linux.dell.com/repo/hardware/dsu/bootstrap.cgi | bash
+
+  - name: install DSU
+    yum: name=dell-system-update state=present
+
+  - name: Install OMSA
+    yum: name={{ meta_pkg_install }} state=present
+    notify:
+    - start omsa
+
+  - name: Open firewall port (firewalld)
+    firewalld:
+      port: 1311/tcp
+      permanent: true
+      immediate: true
+      state: enabled
+    when: ansible_distribution_major_version == "7"
+
+  # There's probably a more elegant way to do this with the 'iptables' module
+  - name: Open firewall port (iptables)
+    shell: /sbin/iptables -t filter -I INPUT -m state --state NEW -m tcp
+           -p tcp --dport 1311 -j ACCEPT
+  # shell: /sbin/iptables-save > /etc/sysconfig/iptables
+    when: ansible_distribution_major_version == "6"

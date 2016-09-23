@@ -1,0 +1,14 @@
+---
+galaxy_info:
+  author: Jose De la Rosa
+  description: Setup official yum repositories on Dell PowerEdge servers
+  company: Dell EMC
+  license: Apache
+  min_ansible_version: 1.4
+  platforms:
+  - name: EL
+    versions:
+    - 6
+    - 7
+  galaxy_tags: [Dell, firmware, OMSA, DSU]
+dependencies: []
