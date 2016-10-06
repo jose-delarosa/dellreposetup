@@ -23,9 +23,12 @@ None
 Example Playbook
 ----------------
 
+```bash
+# Assuming you defined a 'dell' group in /etc/ansible/hosts
 - hosts: dell
   roles:
      - role: jose-delarosa.dellreposetup
+```
 
 License
 -------
@@ -36,4 +39,11 @@ Author Information
 ------------------
 
 jose.delarosa@dell.com
+
+Support
+-------
+
 Please note this playbook is not officially supported by Dell and is published here as a convenience to Dell customers.
+
+If you run into any problems or would like to provide feedback, please open an issue [here](https://github.com/jose-delarosa/dellreposetup) or send a note to the [Linux-PoweEdge mailing list](https://lists.us.dell.com/mailman/listinfo/linux-poweredge).
+
