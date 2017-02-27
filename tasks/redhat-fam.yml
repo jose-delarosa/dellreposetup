@@ -5,6 +5,7 @@
       {{ ansible_pkg_mgr }} name={{ item }} state=present update_cache=yes
     with_items:
       - wget
+      - perl
 
   - name: Subscribe to official Dell yum repos
     shell: wget -q -O - http://linux.dell.com/repo/hardware/dsu/bootstrap.cgi | bash
