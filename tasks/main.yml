@@ -7,4 +7,4 @@
 
   - include: debian-fam.yml
     when: ansible_system_vendor == "Dell Inc." and ansible_os_family == "Debian"
-          and ( ansible_distribution_release in [ "precise", "trusty" ] ) 
+          and ( ansible_distribution_release in [ "precise", "trusty", "xenial" ] ) 
