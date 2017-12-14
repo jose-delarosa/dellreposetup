@@ -30,16 +30,6 @@ Example Playbook
      - role: jose-delarosa.dellreposetup
 ```
 
-License
--------
-
-Apache
-
-Author Information
-------------------
-
-jose.delarosa@dell.com
-
 Support
 -------
 
