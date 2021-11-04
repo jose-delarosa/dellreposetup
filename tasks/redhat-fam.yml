@@ -21,13 +21,21 @@
       state: absent
       path: /tmp/bootstrap.cgi
 
-  - name: install DSU
+  - name: Install Dell System Update (DSU)
     yum: name=dell-system-update state=present
 
-  - name: Install OMSA
+  - name: Install Open Manage System Administrator (OMSA)
     yum: name={{ meta_pkg_install }} state=present
     notify:
     - start omsa
+
+  - name: Enable service dataeng and ensure it is not masked
+    ansible.builtin.systemd:
+      name: dataeng
+      enabled: yes
+      masked: no
+    when: ansible_distribution_major_version >= "7"
+
 
   - name: Open firewall port (firewalld)
     firewalld:
