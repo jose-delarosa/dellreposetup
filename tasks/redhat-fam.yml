@@ -55,6 +55,13 @@
       - dsm_om_shrsvc
       - dsm_om_shrsvc
 
+  - name: Allow user ansible to login to OMSA
+    ansible.builtin.lineinfile:
+      path: /opt/dell/srvadmin/etc/omarolemap
+      state: present
+      insertafter: 'root    *       Administrator'
+      line: 'ansible    *       Administrator'
+
   - name: Open firewall port (firewalld)
     firewalld:
       port: 1311/tcp
