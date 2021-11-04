@@ -1,14 +1,11 @@
 ---
 
-  - name: install required packages
-    action: >
-      {{ ansible_pkg_mgr }} name={{ item }} state=present update_cache=yes
-    with_items:
-      - wget
-      - perl
-
-  - name: Subscribe to official Dell yum repos
-    shell: wget -q -O - http://linux.dell.com/repo/hardware/dsu/bootstrap.cgi | bash
+  - name: Pull script configuring official Dell yum repos
+    # shell: wget -q -O - http://linux.dell.com/repo/hardware/dsu/bootstrap.cgi | bash
+    get_url:
+      url: http://linux.dell.com/repo/hardware/dsu/bootstrap.cgi
+      dest: /tmp/bootstrap.cgi
+      mode: '0700'
 
   - name: install DSU
     yum: name=dell-system-update state=present
