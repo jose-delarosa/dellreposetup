@@ -7,6 +7,20 @@
       dest: /tmp/bootstrap.cgi
       mode: '0700'
 
+  - name: Just import these GPG keys okay
+    ansible.builtin.lineinfile:
+      path: /tmp/bootstrap.cgi
+      regexp: '^IMPORT_GPG_CONFIRMATION="na"'
+      line: IMPORT_GPG_CONFIRMATION="y"
+
+  - name: Excute script configuring official Dell yum repos
+    shell: /tmp/bootstrap.cgi
+
+  - name: Clean Dell script
+    file:
+      state: absent
+      path: /tmp/bootstrap.cgi
+
   - name: install DSU
     yum: name=dell-system-update state=present
 
