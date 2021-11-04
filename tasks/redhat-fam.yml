@@ -36,6 +36,24 @@
       masked: no
     when: ansible_distribution_major_version >= "7"
 
+  - name: Enable service dsm_om_connsvc
+    ansible.builtin.systemd:
+      name: dsm_om_shrsvc
+      enabled: yes
+
+  - name: Enable service dsm_om_shrsvc
+    ansible.builtin.systemd:
+      name: dsm_om_shrsvc
+      enabled: yes
+
+  - name: Start all OMSA services
+    service:
+      name: "{{ item }}"
+      state: started
+    with_items:
+      - dataeng
+      - dsm_om_shrsvc
+      - dsm_om_shrsvc
 
   - name: Open firewall port (firewalld)
     firewalld:
