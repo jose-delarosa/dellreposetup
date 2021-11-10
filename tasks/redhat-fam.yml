@@ -1,22 +1,66 @@
 ---
 
-  - name: install required packages
-    action: >
-      {{ ansible_pkg_mgr }} name={{ item }} state=present update_cache=yes
-    with_items:
-      - wget
-      - perl
+  - name: Pull script configuring official Dell yum repos
+    # shell: wget -q -O - http://linux.dell.com/repo/hardware/dsu/bootstrap.cgi | bash
+    get_url:
+      url: http://linux.dell.com/repo/hardware/dsu/bootstrap.cgi
+      dest: /tmp/bootstrap.cgi
+      mode: '0700'
 
-  - name: Subscribe to official Dell yum repos
-    shell: wget -q -O - http://linux.dell.com/repo/hardware/dsu/bootstrap.cgi | bash
+  - name: Just import these GPG keys okay
+    ansible.builtin.lineinfile:
+      path: /tmp/bootstrap.cgi
+      regexp: '^IMPORT_GPG_CONFIRMATION="na"'
+      line: IMPORT_GPG_CONFIRMATION="y"
 
-  - name: install DSU
+  - name: Excute script configuring official Dell yum repos
+    shell: /tmp/bootstrap.cgi
+
+  - name: Clean Dell script
+    file:
+      state: absent
+      path: /tmp/bootstrap.cgi
+
+  - name: Install Dell System Update (DSU)
     yum: name=dell-system-update state=present
 
-  - name: Install OMSA
+  - name: Install Open Manage System Administrator (OMSA)
     yum: name={{ meta_pkg_install }} state=present
     notify:
     - start omsa
+
+  - name: Enable service dataeng and ensure it is not masked
+    ansible.builtin.systemd:
+      name: dataeng
+      enabled: yes
+      masked: no
+    when: ansible_distribution_major_version >= "7"
+
+  - name: Enable service dsm_om_connsvc
+    ansible.builtin.systemd:
+      name: dsm_om_shrsvc
+      enabled: yes
+
+  - name: Enable service dsm_om_shrsvc
+    ansible.builtin.systemd:
+      name: dsm_om_shrsvc
+      enabled: yes
+
+  - name: Start all OMSA services
+    service:
+      name: "{{ item }}"
+      state: started
+    with_items:
+      - dataeng
+      - dsm_om_shrsvc
+      - dsm_om_shrsvc
+
+  - name: Allow user ansible to login to OMSA
+    ansible.builtin.lineinfile:
+      path: /opt/dell/srvadmin/etc/omarolemap
+      state: present
+      insertafter: 'root    *       Administrator'
+      line: 'ansible    *       Administrator'
 
   - name: Open firewall port (firewalld)
     firewalld:
